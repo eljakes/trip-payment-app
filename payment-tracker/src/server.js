@@ -1,7 +1,8 @@
 import express, { json } from 'express';
-import { findOne, findOneAndUpdate } from './models/Contribution';
 
+import axios from 'axios';
 import { connect } from 'mongoose';
+import { findOneAndUpdate } from './models/Contribution';
 
 const app = express();
 app.use(json());
@@ -9,8 +10,13 @@ app.use(json());
 connect('mongodb://localhost:27017/trip', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.get('/data', async (req, res) => {
-  const contribution = await findOne();
-  res.json(contribution);
+  try {
+    const { data } = await axios.get('https://localhost:3001/data');
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching contribution data:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 app.post('/data', async (req, res) => {

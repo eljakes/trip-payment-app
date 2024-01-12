@@ -2,6 +2,8 @@ import './App.css';
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import { Chart }            from 'react-chartjs-2'
+import { Chart as ChartJS } from 'chart.js/auto'
 import { Line } from 'react-chartjs-2';
 import axios from 'axios';
 
@@ -133,7 +135,6 @@ function PaymentProgress({ sponsors }) {
 
   useEffect(() => {
     if (chartRef.current) {
-      // Destroy the existing chart before rendering a new one
       chartRef.current.destroy();
     }
   }, [sponsors]);

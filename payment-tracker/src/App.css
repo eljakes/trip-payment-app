@@ -1,0 +1,20 @@
+/* App.css */
+.App {
+  text-align: center;
+}
+
+.StudentPayment,
+.SponsorPayment,
+.StudentList,
+.SponsorList,
+.PaymentProgress {
+  margin-top: 20px;
+}
+
+form label {
+  margin-right: 10px;
+}
+
+form button {
+  margin-left: 10px;
+}

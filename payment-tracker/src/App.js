@@ -2,10 +2,18 @@ import './App.css';
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Chart }            from 'react-chartjs-2'
-import { Chart as ChartJS } from 'chart.js/auto'
+import {CategoryScale} from 'chart.js';
+import { Chart } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { LineElement } from 'chart.js';
+import { LinearScale } from 'chart.js';
+import { PointElement } from 'chart.js';
 import axios from 'axios';
+
+Chart.register(LinearScale);
+Chart.register(CategoryScale);
+Chart.register(PointElement);
+Chart.register(LineElement);
 
 const totalStudents = 50;
 const totalCost = 2000;
@@ -17,17 +25,36 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get('/correct-url');
-      setStudents(data.students);
-      setSponsors(data.sponsors);
-      setSponsorContributions(data.sponsors.reduce((total, sponsor) => total + sponsor.contribution, 0));
+      try {
+      const { data } = await axios.get('https://localhost:3001/data');
+       const newData = {
+         sponsors: [
+           { name: "Sponsor 1", contribution: 500 },
+           { name: "Sponsor 2", contribution: 700 },
+           { name: "Sponsor 3", contribution: 300 }
+         ],
+         students: [
+           { paid: 100 },
+           { paid: 50 },
+           { paid: 200 },
+
+         ]
+       };
+        setStudents(newData.students);
+        setSponsors(newData.sponsors);
+        setSponsorContributions(newData.sponsors.reduce((total, sponsor) => total + sponsor.contribution, 0));
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
     };
     fetchData();
   }, []);
 
   const handleStudentPayment = async (studentIndex, payment) => {
-    const newStudents = [...students];
-    newStudents[studentIndex].paid += payment;
+    const newStudents = [{ paid: 0 }, { paid: 0 }, { paid: 0 }];
+    if (studentIndex >= 0 && studentIndex < newStudents.length) {
+      newStudents[studentIndex].paid += payment;
+    }
     setStudents(newStudents);
     await axios.post('/data', { students: newStudents, sponsors });
   };
